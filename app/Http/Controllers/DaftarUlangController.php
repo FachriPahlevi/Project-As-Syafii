@@ -65,7 +65,7 @@ class DaftarUlangController extends Controller
         $kelas = $siswa->kelas;
         
         $tgl_pembayaran = Carbon::now();
-        $id_pembayaran_status = $id;
+        $daftar_ulang = $id;
 
         $harga = Harga::where('jenjang_id', $jenjang->id)->first();
         $nominal = $harga->daftar_ulang; 
@@ -74,7 +74,7 @@ class DaftarUlangController extends Controller
 
         DB::table('histori_transaksi')->insert([
             'tgl_pembayaran' => $tgl_pembayaran,
-            'id_pembayaran_status' => $id_pembayaran_status,
+            'id_daftar_ulang' => $daftar_ulang,
             'nominal' => $nominal,
             'deskripsi' => $deskripsi,
             'created_at' => now(),

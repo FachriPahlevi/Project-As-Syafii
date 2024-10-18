@@ -6,11 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Siswa;
 
-class pembayaran_status extends Model
+class spp extends Model
 {
     use HasFactory;
 
-    protected $table = 'pembayaran_status';
+    protected $table = 'spp';
     protected $guarded = [];
 
     public function siswa(){

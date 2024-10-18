@@ -2,22 +2,24 @@ import React, { useState, useEffect } from 'react';
 import CashierLayout from "@/Layouts/CashierLayout";
 import Filter from "@/Components/Laporan/Filter";
 import Table from "@/Components/Laporan/Table";
+import TablePerkelas from "@/Components/Laporan/TablePerkelas"; // Import tabel perkelas
+import TablePerAnak from "@/Components/Laporan/TablePerAnak";   // Import tabel peranak
 import Modal from "@/Components/Laporan/Modal";
 import * as XLSX from 'xlsx';
-import { saveAs } from 'file-saver';
 import LaporanKas from '@/Components/Laporan/LaporanKas';
 import {
     DocumentArrowDownIcon,
     FolderArrowDownIcon,
 } from '@heroicons/react/24/outline';
 
-export default function Laporan({ transaksi }) {
+export default function Laporan({ transaksi, siswa }) {
     const [filteredData, setFilteredData] = useState(transaksi);
     const [showLaporanKas, setShowLaporanKas] = useState(false);
     const [showTable, setShowTable] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
+    const [category, setCategory] = useState('');  // Tambahkan state untuk kategori
 
     const handleShowModal = () => {
         setShowModal(true);
@@ -28,17 +30,23 @@ export default function Laporan({ transaksi }) {
     };
 
     const handleFilter = (filters) => {
-        const { startDate, endDate, category } = filters;
+        const { startDate, endDate, category, namaSiswa, jenjang, kelas } = filters;
         setStartDate(startDate);
         setEndDate(endDate);
+        setCategory(category);  // Set kategori sesuai dengan yang dipilih di filter
         
-        const filtered = transaksi.filter(item => {
+        let filtered = transaksi.filter(item => {
             const isWithinDateRange = (!startDate || item.tgl_pembayaran >= startDate) &&
                                       (!endDate || item.tgl_pembayaran <= endDate);
-            const matchesCategory = !category || item.category.toLowerCase().includes(category.toLowerCase());
-            return isWithinDateRange && matchesCategory;
+            return isWithinDateRange;
         });
-        
+
+        if (category === 'Perkelas') {
+            filtered = filtered.filter(item => item.jenjang === jenjang && item.kelas === kelas);
+        } else if (category === 'PerAnak') {
+            filtered = filtered.filter(item => item.namaSiswa.toLowerCase().includes(namaSiswa.toLowerCase()));
+        }
+
         setFilteredData(filtered);
         setShowTable(true);
     };
@@ -49,7 +57,7 @@ export default function Laporan({ transaksi }) {
         let totalKredit = 0;
         let saldoAkumulatif = 0;
 
-        wsData.push(["No", "Tanggal", "Keterangan", "Debit", "Kredit", "Saldo"]);
+        wsData.push(["No", "Keterangan", "Debit", "Kredit", "Saldo"]);
 
         filteredData.forEach((item, index) => {
             const debit = item.jenis_transaksi === 'debit' ? formatRupiah(item.nominal) : '-';
@@ -59,7 +67,6 @@ export default function Laporan({ transaksi }) {
             const saldoFormatted = formatRupiah(saldoAkumulatif.toFixed(2));
             wsData.push([
                 index + 1,
-                item.tgl_pembayaran,
                 item.deskripsi,
                 debit,
                 kredit,
@@ -73,7 +80,7 @@ export default function Laporan({ transaksi }) {
             }
         });
 
-        wsData.push(["", "", "Total", formatRupiah(totalDebit.toFixed(2)), formatRupiah(totalKredit.toFixed(2)), formatRupiah((totalDebit - totalKredit).toFixed(2))]);
+        wsData.push(["", "Total", formatRupiah(totalDebit.toFixed(2)), formatRupiah(totalKredit.toFixed(2)), formatRupiah((totalDebit - totalKredit).toFixed(2))]);
 
         const ws = XLSX.utils.aoa_to_sheet(wsData);
         const wb = XLSX.utils.book_new();
@@ -101,7 +108,7 @@ export default function Laporan({ transaksi }) {
                 </div>
 
                 <div className="w-full mb-5">
-                    <Filter onFilter={handleFilter} />
+                    <Filter onFilter={handleFilter} siswa={siswa} />
                 </div>
 
                 <div className="p-6 bg-white shadow-md rounded-lg">
@@ -120,35 +127,15 @@ export default function Laporan({ transaksi }) {
                             </button>
                         </div>
                     </div>
-                    <div className='w-1/4 space-y-2'>
-                        <div className='flex justify-between'>
-                            <div className='w-1/2'>
-                            <p>Tanggal Mulai</p>
-                            </div>
-                            <div className='w-1/2'>
-                                <p>{startDate}</p>
-                            </div>
-                        </div>
-                        <div className='flex justify-between'>
-                            <div className='w-1/2'>
-                            <p>Tanggal Berakhir</p>
-                            </div>
-                            <div className='w-1/2'>
-                                <p>{endDate}</p>
-                            </div>
-                        </div>
-                        <div className='flex justify-between'>
-                            <div className='w-1/2'>
-                                <p>Kategori</p>
-                            </div>
-                            <div className='w-1/2'>
-                                <p>Laporan Universal</p>
-                            </div>
-                        </div>
-                    </div>
-                    {showTable && 
-                        <Table data={filteredData}
-                    />}
+                    
+                    {/* Tampilkan tabel berdasarkan kategori yang dipilih */}
+                    {showTable && (
+                        <>
+                            {category === 'Yayasan' && <Table data={filteredData} />}
+                            {category === 'Perkelas' && <TablePerkelas data={filteredData} />}
+                            {category === 'PerAnak' && <TablePerAnak data={filteredData} />}
+                        </>
+                    )}
                 </div>
 
                 {showLaporanKas && (
@@ -157,7 +144,6 @@ export default function Laporan({ transaksi }) {
                         formatRupiah={formatRupiah}
                         startDate={startDate}
                         endDate={endDate} 
-                        
                     />
                 )}
             </div>

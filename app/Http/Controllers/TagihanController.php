@@ -8,7 +8,7 @@ use Carbon\Carbon;
 
 use App\Models\User;
 use App\Models\Siswa;
-use App\Models\pembayaran_status;
+use App\Models\spp;
 use App\Models\histori_transaksi;
 use App\Models\DaftarUlang;
 use App\Models\Harga;
@@ -28,7 +28,7 @@ class TagihanController extends Controller
         $currentYear = $now->year;
     
         // Mengambil tagihan SPP
-        $spp = pembayaran_status::with('siswa', 'siswa.jenjang')
+        $spp = spp::with('siswa', 'siswa.jenjang')
             ->where('status', 'Belum Lunas')
             ->where(function($query) use ($currentMonth, $currentYear) {
                 $query->where('year', $currentYear)

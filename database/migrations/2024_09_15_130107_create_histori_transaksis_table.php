@@ -16,10 +16,11 @@ return new class extends Migration
         Schema::create('histori_transaksi', function (Blueprint $table) {
             $table->id();
             $table->date('tgl_pembayaran');
-            $table->foreignId('id_pembayaran_status')->nullable()->constrained('pembayaran_status')->onDelete('restrict');
-            $table->decimal('nominal' ,15,2);
+            $table->foreignId('id_daftar_ulang')->nullable()->constrained('daftar_ulang')->onDelete('restrict');
+            $table->foreignId('id_spp')->nullable()->constrained('spp')->onDelete('restrict');
+            $table->decimal('nominal', 15, 2);
             $table->string('deskripsi');
-            $table->enum('jenis_transaksi',['debit', 'kredit'])->default('debit');
+            $table->enum('jenis_transaksi', ['debit', 'kredit'])->default('debit');
             $table->timestamps();
         });
     }

@@ -7,6 +7,7 @@ use App\Models\Siswa;
 use App\Models\Jenjang;
 use App\Models\Kelas;
 use App\Models\Rombel;
+use App\Models\historiTransaksi;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 class TabunganController extends Controller
@@ -58,9 +59,10 @@ class TabunganController extends Controller
      * @param  \App\Models\tabungan  $tabungan
      * @return \Illuminate\Http\Response
      */
-    public function show(tabungan $tabungan)
+    public function show($id)
     {
-        //
+        $histori = historiTransaksi::findOrFail($id);
+        return Inertia::render('HistoriTabungan');
     }
 
     /**

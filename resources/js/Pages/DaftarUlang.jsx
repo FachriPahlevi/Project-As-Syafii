@@ -3,7 +3,7 @@ import CashierLayout from '@/Layouts/CashierLayout';
 import Search from '@/Components/DaftarUlang/Search';
 import Table from '@/Components/DaftarUlang/Table';
 
-export default function DaftarUlang({ pembayaran_status, tagihan }) {
+export default function DaftarUlang({ tagihan }) {
     const [filteredtagihan, setFilteredtagihan] = useState([]);
     const [selectedtagihan, setSelectedtagihan] = useState([]);
 

@@ -8,7 +8,7 @@ use App\Models\Siswa;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
-class PembayaranStatusSeeder extends Seeder
+class SppSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -25,9 +25,9 @@ class PembayaranStatusSeeder extends Seeder
 
         foreach ($siswa as $siswa_id) {
             for ($i = 0; $i < 12; $i++) {
-                $date = Carbon::createFromDate($year, 4, 1)->addMonths($i);
+                $date = Carbon::createFromDate($year, 8, 1)->addMonths($i);
 
-                DB::table('pembayaran_status')->insert([
+                DB::table('spp')->insert([
                     'siswa_id' => $siswa_id,
                     'month' => $date->month,
                     'year' => $date->year,

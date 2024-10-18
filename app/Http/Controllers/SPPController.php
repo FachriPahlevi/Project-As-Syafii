@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\pembayaran_status;
+use App\Models\spp;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -16,7 +16,7 @@ use App\Models\HistoriTransaksi;
 use Illuminate\Support\Facades\Log;
 
 
-class PembayaranStatusController extends Controller
+class SPPController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -26,7 +26,7 @@ class PembayaranStatusController extends Controller
     public function index()
 {
 
-    $histori = pembayaran_status::with(['siswa', 'siswa.jenjang', 'siswa.jenjang.harga'])->get();
+    $histori = spp::with(['siswa', 'siswa.jenjang', 'siswa.jenjang.harga'])->get();
     $histori = $histori->map(function($item) {
 
         $siswa = $item->siswa;
@@ -41,13 +41,13 @@ class PembayaranStatusController extends Controller
     });
     
 
-    return Inertia::render('Pembayaran', [
+    return Inertia::render('Spp', [
         'histori' => $histori,
     ]);
 }
 
 public function getNota($id){
-    $nota = HistoriTransaksi::where('id_pembayaran_status', $id)->first();
+    $nota = HistoriTransaksi::where('id_spp', $id)->first();
     return response()->json($nota);
 }
 
@@ -77,7 +77,7 @@ public function getNota($id){
     ]);
 
     
-    $pembayaran = pembayaran_status::findOrFail($id);
+    $pembayaran = spp::findOrFail($id);
 
     $siswa = $pembayaran->siswa;
 
@@ -90,7 +90,7 @@ public function getNota($id){
         return redirect()->back()->withErrors('Harga SPP tidak ditemukan untuk jenjang ini.');
     }
     $tgl_pembayaran = Carbon::now();
-    $id_pembayaran_status = $id;
+    $id_spp = $id;
     $spp = $harga->spp;
     $diskon = $siswa->diskon;
     $nominal = $spp - $diskon;
@@ -100,7 +100,7 @@ public function getNota($id){
 
     DB::table('histori_transaksi')->insert([
         'tgl_pembayaran' => $tgl_pembayaran,
-        'id_pembayaran_status' => $id_pembayaran_status,
+        'id_spp' => $id_spp,
         'nominal' => $nominal,
         'deskripsi' => $deskripsi,
         'created_at' => now(),
@@ -118,10 +118,10 @@ public function getNota($id){
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\pembayaran_status  $pembayaran_status
+     * @param  \App\Models\spp  $spp
      * @return \Illuminate\Http\Response
      */
-    public function show(pembayaran_status $pembayaran_status)
+    public function show(spp $spp)
     {
         //
     }
@@ -129,10 +129,10 @@ public function getNota($id){
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\pembayaran_status  $pembayaran_status
+     * @param  \App\Models\spp  $spp
      * @return \Illuminate\Http\Response
      */
-    public function edit(pembayaran_status $pembayaran_status)
+    public function edit(spp $spp)
     {
         //
     }
@@ -141,10 +141,10 @@ public function getNota($id){
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\pembayaran_status  $pembayaran_status
+     * @param  \App\Models\spp  $spp
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, pembayaran_status $pembayaran_status)
+    public function update(Request $request, spp $spp)
     {
         //
     }
@@ -152,10 +152,10 @@ public function getNota($id){
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\pembayaran_status  $pembayaran_status
+     * @param  \App\Models\spp  $spp
      * @return \Illuminate\Http\Response
      */
-    public function destroy(pembayaran_status $pembayaran_status)
+    public function destroy(spp $spp)
     {
         //
     }

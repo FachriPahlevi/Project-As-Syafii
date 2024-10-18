@@ -17,7 +17,7 @@ export default function Sidebar() {
         { name: 'Laporan', icon: <ClipboardDocumentCheckIcon width={18} className="text-slate-400" />, path: '/laporan' },
         { name: 'Tabungan', icon: <BanknotesIcon width={18} className="text-slate-400" />, path: '/tabungan' },
         { name: 'Daftar Ulang', icon: <DocumentDuplicateIcon width={18} className="text-slate-400" />, path: '/daftar-ulang' },
-        { name: 'SPP', icon: <CurrencyDollarIcon width={18} className="text-slate-400" />, path: '/pembayaran' },
+        { name: 'SPP', icon: <CurrencyDollarIcon width={18} className="text-slate-400" />, path: '/spp' },
     ];
 
     // const menu2 = [

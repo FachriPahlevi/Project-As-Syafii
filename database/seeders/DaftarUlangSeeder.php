@@ -23,8 +23,8 @@ class DaftarUlangSeeder extends Seeder
     $year = $now->year;
 
     foreach ($siswa as $siswa_id) {
-        // Data untuk bulan Januari
-        $date_start = Carbon::createFromDate($year, 1, 1);
+        // Data untuk bulan Agustus
+        $date_start = Carbon::createFromDate($year, 8, 1);
         DB::table('daftar_ulang')->insert([
             'siswa_id' => $siswa_id,
             'status' => 'Belum Lunas',
@@ -35,7 +35,7 @@ class DaftarUlangSeeder extends Seeder
         ]);
 
         // Data untuk bulan Juni
-        $date_end = Carbon::createFromDate($year, 6, 1); // Bulan 6
+        $date_end = Carbon::createFromDate($year, 2, 1); // Bulan 6
         DB::table('daftar_ulang')->insert([
             'siswa_id' => $siswa_id,
             'status' => 'Belum Lunas',

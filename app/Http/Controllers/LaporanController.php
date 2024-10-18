@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Siswa;
 use App\Models\HistoriTransaksi;
-use App\Models\pembayaran_status;
+use App\Models\spp;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
@@ -21,9 +21,11 @@ class LaporanController extends Controller
      */
     public function index()
     {
-        $transaksi = HistoriTransaksi::with(['pembayaran_status'])->get();
+        $siswa = Siswa::all();
+        $transaksi = HistoriTransaksi::with(['spp'])->get();
         return Inertia::render('Laporan',[
             'transaksi' => $transaksi,
+            'siswa' => $siswa,
         ]);
     }
 

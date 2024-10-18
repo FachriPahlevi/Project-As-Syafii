@@ -8,7 +8,7 @@ use Carbon\Carbon;
 
 use App\Models\User;
 use App\Models\Siswa;
-use App\Models\pembayaran_status;
+use App\Models\spp;
 use App\Models\Tabungan;
 use App\Models\kelas;
 use App\Models\HistoriTransaksi;
@@ -32,7 +32,7 @@ class IndexController extends Controller
     $currentMonth = $now->format('F');
     $currentYear = $now->year;
 
-    $pembayaranStatus = pembayaran_status::with(['siswa.kelas','siswa.jenjang','siswa.rombel'])
+    $pembayaranStatus = spp::with(['siswa.kelas','siswa.jenjang','siswa.rombel'])
     ->where('month', $currentMonth)
     ->where('year', $currentYear)
     ->get();
@@ -42,7 +42,7 @@ class IndexController extends Controller
             ->groupBy('jenjang_id')
             ->get();
 
-    $lunas = pembayaran_status::where('status', 'Belum Lunas')
+    $lunas = spp::where('status', 'Belum Lunas')
     ->where('month', $currentMonth)
     ->count();
 
@@ -59,7 +59,7 @@ class IndexController extends Controller
 }
 
     public function handleUpdateAjaran(){
-        $pembayaranStatus = pembayaran_status::with(['siswa'])->get();
+        $pembayaranStatus = spp::with(['siswa'])->get();
 
         
         return Inertia::render('Index', [

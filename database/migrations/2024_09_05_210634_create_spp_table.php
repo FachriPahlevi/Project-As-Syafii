@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('pembayaran_status', function (Blueprint $table) {
+        Schema::create('spp', function (Blueprint $table) {
             $table->id();
             $table->foreignId('siswa_id')->nullable()->constrained('siswa')->onDelete('restrict');
             $table->foreignId('ajaran_id')->constrained('tahun_ajar')->onDelete('restrict');
@@ -32,6 +32,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('pembayaran_status');
+        Schema::dropIfExists('spp');
     }
 };

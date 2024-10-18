@@ -6,6 +6,13 @@ import Nota from './Nota';
 export default function Table({ data = [] }) {
     const [selectedPayment, setSelectedPayment] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const monthToString = (month) => {
+        const months = [
+            'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+            'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+        ];
+        return months[month - 1];
+    };
 
     const handlePayment = (id) => {
         Swal.fire({
@@ -76,7 +83,7 @@ export default function Table({ data = [] }) {
                                 <td className="py-2 px-4 border-b">{item.siswa?.nama || 'Nama tidak ditemukan'}</td>
                                 <td className="py-2 px-4 border-b">{item.siswa?.nisn || 'NISN tidak ditemukan'}</td>
                                 <td className="py-2 px-4 border-b">{item.year}</td>
-                                <td className="py-2 px-4 border-b">{item.month}</td>
+                                <td className="py-2 px-4 border-b">{monthToString(item.month)}</td>
                                 <td className="py-2 px-4 border-b">
                                     {item.nominal
                                         ? new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(item.nominal)
