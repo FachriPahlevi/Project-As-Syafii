@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import CashierLayout from "@/Layouts/CashierLayout";
 import Filter from "@/Components/Laporan/Filter";
 import Table from "@/Components/Laporan/Table";
-import TablePerkelas from "@/Components/Laporan/TablePerkelas"; // Import tabel perkelas
-import TablePerAnak from "@/Components/Laporan/TablePerAnak";   // Import tabel peranak
+import TablePerkelas from "@/Components/Laporan/TablePerkelas";
+import TablePerAnak from "@/Components/Laporan/TablePerAnak";
 import Modal from "@/Components/Laporan/Modal";
 import * as XLSX from 'xlsx';
 import LaporanKas from '@/Components/Laporan/LaporanKas';
@@ -19,7 +19,7 @@ export default function Laporan({ transaksi, siswa }) {
     const [showModal, setShowModal] = useState(false);
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
-    const [category, setCategory] = useState('');  // Tambahkan state untuk kategori
+    const [activeTab, setActiveTab] = useState('Yayasan');  // Ubah dari category ke activeTab
 
     const handleShowModal = () => {
         setShowModal(true);
@@ -30,20 +30,19 @@ export default function Laporan({ transaksi, siswa }) {
     };
 
     const handleFilter = (filters) => {
-        const { startDate, endDate, category, namaSiswa, jenjang, kelas } = filters;
+        const { startDate, endDate} = filters;
         setStartDate(startDate);
         setEndDate(endDate);
-        setCategory(category);  // Set kategori sesuai dengan yang dipilih di filter
-        
+
         let filtered = transaksi.filter(item => {
             const isWithinDateRange = (!startDate || item.tgl_pembayaran >= startDate) &&
                                       (!endDate || item.tgl_pembayaran <= endDate);
             return isWithinDateRange;
         });
 
-        if (category === 'Perkelas') {
+        if (activeTab === 'Perkelas') {
             filtered = filtered.filter(item => item.jenjang === jenjang && item.kelas === kelas);
-        } else if (category === 'PerAnak') {
+        } else if (activeTab === 'PerAnak') {
             filtered = filtered.filter(item => item.namaSiswa.toLowerCase().includes(namaSiswa.toLowerCase()));
         }
 
@@ -112,7 +111,42 @@ export default function Laporan({ transaksi, siswa }) {
                 </div>
 
                 <div className="p-6 bg-white shadow-md rounded-lg">
-                    <div className='flex justify-between items-center text-center mb-3'>
+                    
+                {/* Tab Kategori */}
+                <div className="flex border-b">
+                    <button
+                        onClick={() => setActiveTab("Yayasan")}
+                        className={`px-4 py-2 font-medium ${
+                            activeTab === "Yayasan"
+                                ? "text-blue-600 border-b-2 border-blue-600"
+                                : "text-gray-500"
+                        }`}
+                    >
+                        Laporan Yayasan
+                    </button>
+                    <button
+                        onClick={() => setActiveTab("Perkelas")}
+                        className={`px-4 py-2 font-medium ${
+                            activeTab === "Perkelas"
+                                ? "text-blue-600 border-b-2 border-blue-600"
+                                : "text-gray-500"
+                        }`}
+                    >
+                        Laporan Perkelas
+                    </button>
+                    <button
+                        onClick={() => setActiveTab("PerAnak")}
+                        className={`px-4 py-2 font-medium ${
+                            activeTab === "PerAnak"
+                                ? "text-blue-600 border-b-2 border-blue-600"
+                                : "text-gray-500"
+                        }`}
+                    >
+                        Laporan PerAnak
+                    </button>
+                </div>
+
+                    <div className='flex justify-between items-center text-center mb-3 mt-5'>
                         <h1 className="text-xl font-semibold">Laporan Pemasukan & Pengeluaran</h1>
                         <div className="space-x-2">
                             <button 
@@ -131,9 +165,9 @@ export default function Laporan({ transaksi, siswa }) {
                     {/* Tampilkan tabel berdasarkan kategori yang dipilih */}
                     {showTable && (
                         <>
-                            {category === 'Yayasan' && <Table data={filteredData} />}
-                            {category === 'Perkelas' && <TablePerkelas data={filteredData} />}
-                            {category === 'PerAnak' && <TablePerAnak data={filteredData} />}
+                            {activeTab === 'Yayasan' && <Table data={filteredData} />}
+                            {activeTab === 'Perkelas' && <TablePerkelas data={filteredData} />}
+                            {activeTab === 'PerAnak' && <TablePerAnak data={filteredData} />}
                         </>
                     )}
                 </div>

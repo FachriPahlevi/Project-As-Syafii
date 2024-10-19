@@ -22,7 +22,7 @@ class LaporanController extends Controller
     public function index()
     {
         $siswa = Siswa::all();
-        $transaksi = HistoriTransaksi::with(['spp'])->get();
+        $transaksi = HistoriTransaksi::with(['spp', 'spp.siswa', 'spp.siswa.jenjang', 'spp.siswa.kelas'])->get();
         return Inertia::render('Laporan',[
             'transaksi' => $transaksi,
             'siswa' => $siswa,

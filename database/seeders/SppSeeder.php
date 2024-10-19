@@ -21,7 +21,6 @@ class SppSeeder extends Seeder
 
         $now = Carbon::now();
 
-        $year = 2024;
 
         foreach ($siswa as $siswa_id) {
             for ($i = 0; $i < 12; $i++) {

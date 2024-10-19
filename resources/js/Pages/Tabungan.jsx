@@ -3,11 +3,7 @@ import { Head } from '@inertiajs/react';
 import CashierLayout from "@/Layouts/CashierLayout";
 import Table from "@/Components/Tabungan/Table";
 import Search from "@/Components/Tabungan/Search";
-import { 
-  FaUsers, 
-  FaWallet, 
-  FaHistory
-} from 'react-icons/fa';
+import { FaUsers, FaWallet, FaHistory } from 'react-icons/fa';
 
 const StatCard = ({ title, value, icon: Icon, color }) => (
   <div className="bg-white rounded-lg shadow p-6 flex items-start justify-between">
@@ -23,12 +19,33 @@ const StatCard = ({ title, value, icon: Icon, color }) => (
 
 export default function Tabungan({ tabungan }) {
     const [filteredTabungan, setFilteredTabungan] = useState(tabungan);
+    const [activeTab, setActiveTab] = useState("siswa");
 
     const handleSearch = (searchTerm) => {
         const filtered = tabungan.filter(item =>
             item.siswa.nama.toLowerCase().includes(searchTerm.toLowerCase())
         );
         setFilteredTabungan(filtered);
+    };
+
+    const renderContent = () => {
+        switch (activeTab) {
+            case "siswa":
+                return (
+                    <>
+                        <div className="flex justify-end mb-4">
+                            <Search onSearch={handleSearch} />
+                        </div>
+                        <Table tabungan={filteredTabungan} />
+                    </>
+                );
+            case "transaksi":
+                return <div>Konten Transaksi</div>;
+            case "riwayat":
+                return <div>Konten Riwayat</div>;
+            default:
+                return null;
+        }
     };
 
     return (
@@ -64,22 +81,40 @@ export default function Tabungan({ tabungan }) {
                     <div className="bg-white rounded-lg shadow-lg overflow-hidden">
                         {/* Tabs */}
                         <div className="flex border-b">
-                            <button className="px-4 py-2 text-blue-600 border-b-2 border-blue-600 font-medium">
+                            <button
+                                onClick={() => setActiveTab("siswa")}
+                                className={`px-4 py-2 font-medium ${
+                                    activeTab === "siswa"
+                                        ? "text-blue-600 border-b-2 border-blue-600"
+                                        : "text-gray-500"
+                                }`}
+                            >
                                 Siswa
                             </button>
-                            <button className="px-4 py-2 text-gray-500 font-medium">
+                            <button
+                                onClick={() => setActiveTab("transaksi")}
+                                className={`px-4 py-2 font-medium ${
+                                    activeTab === "transaksi"
+                                        ? "text-blue-600 border-b-2 border-blue-600"
+                                        : "text-gray-500"
+                                }`}
+                            >
                                 Transaksi
                             </button>
-                            <button className="px-4 py-2 text-gray-500 font-medium">
+                            <button
+                                onClick={() => setActiveTab("riwayat")}
+                                className={`px-4 py-2 font-medium ${
+                                    activeTab === "riwayat"
+                                        ? "text-blue-600 border-b-2 border-blue-600"
+                                        : "text-gray-500"
+                                }`}
+                            >
                                 Riwayat
                             </button>
                         </div>
 
                         <div className="p-6">
-                            <div className="flex justify-end mb-4">
-                                <Search onSearch={handleSearch} />
-                            </div>
-                            <Table tabungan={filteredTabungan} />
+                            {renderContent()}
                         </div>
                     </div>
                 </div>
