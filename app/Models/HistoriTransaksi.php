@@ -11,8 +11,8 @@ class HistoriTransaksi extends Model
     protected $table = 'histori_transaksi';
     protected $guarded = [];
 
-    public function spp(){
-       return $this->belongsTo(spp::class, 'id_spp');
+    public function siswa(){
+       return $this->belongsTo(siswa::class, 'id_siswa');
     }
 
 }

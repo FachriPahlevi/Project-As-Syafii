@@ -1,4 +1,5 @@
 import { usePage, Link } from '@inertiajs/react';
+import React from 'react';
 import {
     HomeModernIcon,
     UserGroupIcon,
@@ -6,7 +7,8 @@ import {
     BanknotesIcon,
     ClipboardDocumentCheckIcon,
     DocumentDuplicateIcon,
-    CurrencyDollarIcon
+    CurrencyDollarIcon,
+    Cog8ToothIcon
 } from '@heroicons/react/24/outline';
 
 export default function Sidebar() {
@@ -18,6 +20,7 @@ export default function Sidebar() {
         { name: 'Tabungan', icon: <BanknotesIcon width={18} className="text-slate-400" />, path: '/tabungan' },
         { name: 'Daftar Ulang', icon: <DocumentDuplicateIcon width={18} className="text-slate-400" />, path: '/daftar-ulang' },
         { name: 'SPP', icon: <CurrencyDollarIcon width={18} className="text-slate-400" />, path: '/spp' },
+        { name: 'Pengaturan', icon: <Cog8ToothIcon width={18} className="text-slate-400" />, path: '/pengaturan' },
     ];
 
     // const menu2 = [
@@ -69,11 +72,12 @@ function Menus({ menu, url }) {
                         ? 'bg-blue-500 text-blue-500 bg-opacity-10 rounded-md p-2'
                         : 'px-3 py-2';
                     const textActive = isActive ? 'text-blue-500' : 'text-slate-400';
+                    const iconClass = isActive ? 'text-blue-500' : 'text-slate-400';
 
                     return (
                         <Link key={index} href={val.path}>
                             <li className={`${menuActive} cursor-pointer mx-5 text-lg font-medium mb-3 flex hover:bg-blue-200 rounded-md`}>
-                                {val.icon}
+                                {React.cloneElement(val.icon, { className: `${iconClass}` })}
                                 <div className={`ml-2 ${textActive} hidden sm:block`}>
                                     {val.name}
                                 </div>
@@ -81,7 +85,7 @@ function Menus({ menu, url }) {
                         </Link>
                     );
                 })}
-            </ul>
+            </ul>   
         </div>
     );
 }

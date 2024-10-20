@@ -5,25 +5,50 @@ export default function TablePerkelas({ data = [] }) {
     const [jenjang, setJenjang] = useState('');
     const [filteredData, setFilteredData] = useState([]);
 
+    const formatRupiah = (number) => {
+        return number.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' });
+    };
+
     const handleFilter = () => {
-        // Pastikan input kelas dan jenjang tidak kosong
         if (!kelas || !jenjang) {
             alert('Silakan pilih Jenjang dan Kelas terlebih dahulu');
             return;
         }
 
-        // Filter data sesuai dengan input jenjang dan kelas (case-insensitive comparison)
         const filtered = data.filter(item => 
-            item.spp.siswa.kelas.id === parseInt(kelas, 10) && 
-            item.spp.siswa.jenjang.id === parseInt(jenjang, 10)
+            item.siswa.kelas_id === parseInt(kelas, 10) && 
+            item.siswa.jenjang_id === parseInt(jenjang, 10)
         );
 
         setFilteredData(filtered);
-        console.log(filtered);
     };
 
-    console.log('Kelas:', kelas);
-    console.log('Jenjang:', jenjang);
+    // Menghitung total debit dan kredit
+    const totalDebit = filteredData.reduce((acc, item) => {
+        return acc + (item.jenis_transaksi === 'debit' ? parseFloat(item.nominal) : 0);
+    }, 0);
+
+    const totalKredit = filteredData.reduce((acc, item) => {
+        return acc + (item.jenis_transaksi === 'kredit' ? parseFloat(item.nominal) : 0);
+    }, 0);
+
+    // Menghitung saldo berjalan untuk setiap transaksi
+    const dataWithRunningBalance = filteredData.map((item, index) => {
+        let runningBalance = 0;
+        // Hitung saldo dari awal sampai transaksi saat ini
+        for (let i = 0; i <= index; i++) {
+            const trx = filteredData[i];
+            if (trx.jenis_transaksi === 'debit') {
+                runningBalance += parseFloat(trx.nominal);
+            } else {
+                runningBalance -= parseFloat(trx.nominal);
+            }
+        }
+        return { ...item, saldoAkumulatif: runningBalance };
+    });
+
+    // Total saldo akhir
+    const totalSaldoAkhir = totalDebit - totalKredit;
 
     return (
         <div className="p-6 w-full mt-5 rounded-lg">
@@ -71,30 +96,45 @@ export default function TablePerkelas({ data = [] }) {
                 </button>
             </div>
 
-            {/* Hanya tampilkan tabel jika data hasil filter tersedia */}
-            {filteredData.length > 0 ? (
+            {dataWithRunningBalance.length > 0 ? (
                 <div className="mt-6">
                     <table className="w-full border-collapse">
                         <thead>
                             <tr className="text-md font-semibold text-gray-700 bg-gray-100">
-                                <th className="border p-2">No</th>
+                                <th className="border p-2">Tanggal</th>
+                                <th className="border p-2">Nama Siswa</th>
                                 <th className="border p-2">Kelas</th>
+                                <th className="border p-2">Keterangan</th>
                                 <th className="border p-2">Debit</th>
                                 <th className="border p-2">Kredit</th>
                                 <th className="border p-2">Saldo</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {filteredData.map((item, index) => (
-                                <tr key={index} className="hover:bg-gray-50">
-                                    <td className="border p-2">{index + 1}</td>
-                                    <td className="border p-2">{item.kelas}</td>
-                                    <td className="border p-2 text-right">{item.debit}</td>
-                                    <td className="border p-2 text-right">{item.kredit}</td>
-                                    <td className="border p-2 text-right">{item.saldo}</td>
-                                </tr>
-                            ))}
+                            {dataWithRunningBalance.map((item, index) => {
+                                const debit = item.jenis_transaksi === 'debit' ? parseFloat(item.nominal) : 0;
+                                const kredit = item.jenis_transaksi === 'kredit' ? parseFloat(item.nominal) : 0;
+                                return (
+                                    <tr key={index} className="hover:bg-gray-50">
+                                        <td className="border p-2">{item.tgl_pembayaran}</td>
+                                        <td className="border p-2">{item.siswa.nama}</td>
+                                        <td className="border p-2">{item.siswa.jenjang.nama_jenjang} {item.siswa.kelas.nama_kelas}</td>
+                                        <td className="border p-2">{item.deskripsi}</td>
+                                        <td className="border p-2 text-right">{formatRupiah(debit)}</td>
+                                        <td className="border p-2 text-right">{formatRupiah(kredit)}</td>
+                                        <td className="border p-2 text-right">{formatRupiah(item.saldoAkumulatif)}</td>
+                                    </tr>
+                                );
+                            })}
                         </tbody>
+                        <tfoot>
+                            <tr className="font-semibold">
+                                <td className="border p-2" colSpan="4">Total</td>
+                                <td className="border p-2 text-right">{formatRupiah(totalDebit)}</td>
+                                <td className="border p-2 text-right">{formatRupiah(totalKredit)}</td>
+                                <td className="border p-2 text-right">{formatRupiah(totalSaldoAkhir)}</td>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
             ) : (

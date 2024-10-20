@@ -39,13 +39,6 @@ export default function Laporan({ transaksi, siswa }) {
                                       (!endDate || item.tgl_pembayaran <= endDate);
             return isWithinDateRange;
         });
-
-        if (activeTab === 'Perkelas') {
-            filtered = filtered.filter(item => item.jenjang === jenjang && item.kelas === kelas);
-        } else if (activeTab === 'PerAnak') {
-            filtered = filtered.filter(item => item.namaSiswa.toLowerCase().includes(namaSiswa.toLowerCase()));
-        }
-
         setFilteredData(filtered);
         setShowTable(true);
     };
@@ -167,7 +160,7 @@ export default function Laporan({ transaksi, siswa }) {
                         <>
                             {activeTab === 'Yayasan' && <Table data={filteredData} />}
                             {activeTab === 'Perkelas' && <TablePerkelas data={filteredData} />}
-                            {activeTab === 'PerAnak' && <TablePerAnak data={filteredData} />}
+                            {activeTab === 'PerAnak' && <TablePerAnak data={filteredData} siswa={siswa} />}
                         </>
                     )}
                 </div>

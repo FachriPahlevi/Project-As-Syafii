@@ -60,6 +60,7 @@ class DaftarUlangController extends Controller
 
         $pembayaran = DaftarUlang::findOrFail($id);
         $siswa = $pembayaran->siswa;
+        $siswa_id = $siswa->id;
 
         $jenjang = $siswa->jenjang;
         $kelas = $siswa->kelas;
@@ -74,9 +75,10 @@ class DaftarUlangController extends Controller
 
         DB::table('histori_transaksi')->insert([
             'tgl_pembayaran' => $tgl_pembayaran,
-            'id_daftar_ulang' => $daftar_ulang,
+            'id_siswa' => $siswa_id,
             'nominal' => $nominal,
             'deskripsi' => $deskripsi,
+            'kategori' => 'Daftar Ulang',
             'created_at' => now(),
             'updated_at' => now(),
         ]);

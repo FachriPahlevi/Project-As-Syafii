@@ -14,7 +14,7 @@ use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\DaftarUlangController;
 use App\Http\Controllers\TagihanController;
 use App\Http\Controllers\CalonSiswaController;
-
+use App\Http\Controllers\PengaturanController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -46,6 +46,7 @@ use App\Http\Controllers\CalonSiswaController;
     Route::get('/siswa', [SiswaController::class, 'index']);
     Route::get('/tagihan/{id}', [TagihanController::class, 'index']);
     Route::get('/calon-siswa', [CalonSiswaController::class, 'index']);
+    Route::get('/pengaturan', [PengaturanController::class, 'index']);
 
     Route::post('/spp/{id}',[SppController::class, 'store']);
     Route::post('/laporan',[LaporanController::class, 'store']);

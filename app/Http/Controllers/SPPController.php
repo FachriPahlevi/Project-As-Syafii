@@ -80,14 +80,14 @@ public function getNota($id){
     $pembayaran = spp::findOrFail($id);
 
     $siswa = $pembayaran->siswa;
-
+    $siswa_id = $siswa->id;
     $jenjang = $siswa->jenjang;
     $kelas = $siswa->kelas;
 
     $harga = Harga::where('jenjang_id', $jenjang->id)->first();
 
     if (!$harga) {
-        return redirect()->back()->withErrors('Harga SPP tidak ditemukan untuk jenjang ini.');
+        return response()->json(['error' => 'Harga SPP tidak ditemukan untuk jenjang ini.'], 400);
     }
     $tgl_pembayaran = Carbon::now();
     $id_spp = $id;
@@ -100,16 +100,22 @@ public function getNota($id){
 
     DB::table('histori_transaksi')->insert([
         'tgl_pembayaran' => $tgl_pembayaran,
-        'id_spp' => $id_spp,
+        'id_siswa' => $siswa_id,
         'nominal' => $nominal,
         'deskripsi' => $deskripsi,
+        'kategori' => 'SPP',
         'created_at' => now(),
         'updated_at' => now(),
     ]);
     $pembayaran->status = $request->status;
     $pembayaran->save();
 
-    return redirect()->back()->with('message', 'Data Berhasil Disimpan');
+    return response()->json([
+        'message' => 'Data Berhasil Disimpan',
+        'status' => $pembayaran->status,
+        'nominal' => $nominal,
+        'deskripsi' => $deskripsi
+    ]);
 }
 
 

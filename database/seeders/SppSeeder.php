@@ -21,7 +21,7 @@ class SppSeeder extends Seeder
 
         $now = Carbon::now();
 
-
+        $year = $now->year;
         foreach ($siswa as $siswa_id) {
             for ($i = 0; $i < 12; $i++) {
                 $date = Carbon::createFromDate($year, 8, 1)->addMonths($i);

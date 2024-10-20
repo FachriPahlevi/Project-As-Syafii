@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 import Nota from './Nota';
 import axios from 'axios';
 
-export default function Table({ data = [] }) {
+
+export default function Table({ data: initialData = [] }) {
+    const [data, setData] = useState(initialData); // Maintain data in state
     const [selectedPayment, setSelectedPayment] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [nota, setNota] = useState([]);
@@ -19,14 +21,21 @@ export default function Table({ data = [] }) {
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
-                    await axios.post(`/spp/${id}`, { status: 'Lunas' });
+                    // Send payment request to backend
+                    const response = await axios.post(`/spp/${id}`, { status: 'Lunas' });
+                    
+                    // If successful, update the specific item in the data array
+                    setData((prevData) => 
+                        prevData.map((item) => 
+                            item.id === id ? { ...item, status: 'Lunas' } : item
+                        )
+                    );
+
                     Swal.fire(
                         'Berhasil!',
                         'Pembayaran telah berhasil, status telah diubah menjadi Lunas.',
                         'success'
-                    ).then(() => {
-                        window.location.reload();
-                    });
+                    );
                 } catch (error) {
                     Swal.fire(
                         'Error!',
@@ -66,7 +75,7 @@ export default function Table({ data = [] }) {
         window.print();
     };
 
-     const monthToString = (month) => {
+    const monthToString = (month) => {
         const months = [
             'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
             'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
@@ -137,7 +146,7 @@ export default function Table({ data = [] }) {
                 <Nota
                     selectedPayment={selectedPayment}
                     printNota={printNota}
-                    nota={nota} // Ensure Nota uses this prop
+                    nota={nota} 
                     closeModal={closeModal} 
                 />
             )}

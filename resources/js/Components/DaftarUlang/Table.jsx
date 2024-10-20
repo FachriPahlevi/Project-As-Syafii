@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-
 import Nota from './Nota';
-
 
 export default function Table({ data = [] }) {
     const [selectedPayment, setSelectedPayment] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [payments, setPayments] = useState(data);
+
     const monthToString = (month) => {
         const months = [
             'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
@@ -31,9 +31,13 @@ export default function Table({ data = [] }) {
                         'Berhasil!',
                         'Pembayaran telah berhasil, status telah diubah menjadi Lunas.',
                         'success'
-                    ).then(() => {
-                        window.location.reload();
-                    });
+                    );
+                    // Update state tanpa reload halaman
+                    setPayments((prevPayments) => 
+                        prevPayments.map((payment) => 
+                            payment.id === id ? { ...payment, status: 'Lunas' } : payment
+                        )
+                    );
                 } catch (error) {
                     Swal.fire(
                         'Error!',
@@ -53,7 +57,6 @@ export default function Table({ data = [] }) {
 
     const closeModal = () => {
         setIsModalOpen(false); // Menutup modal
-        
     };
 
     const printNota = () => {
@@ -76,8 +79,8 @@ export default function Table({ data = [] }) {
                     </tr>
                 </thead>
                 <tbody>
-                    {data.length > 0 ? (
-                        data.map((item, index) => (
+                    {payments.length > 0 ? (
+                        payments.map((item, index) => (
                             <tr key={index} className="hover:bg-gray-50">
                                 <td className="py-2 px-4 border-b">{index + 1}</td>
                                 <td className="py-2 px-4 border-b">{item.siswa?.nama || 'Nama tidak ditemukan'}</td>
@@ -89,7 +92,6 @@ export default function Table({ data = [] }) {
                                         ? new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(item.nominal)
                                         : 'Nominal tidak tersedia'}
                                 </td>
-
                                 <td className={`py-2 px-4 border-b ${item.status === 'Lunas' ? 'text-green-600' : 'text-red-600'}`}>
                                     {item.status}
                                 </td>
